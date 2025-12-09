@@ -1,243 +1,174 @@
-// CONFIGURAÇÕES
-const telProprietario = "5512997348237";
-const ANO = 2026;
+document.addEventListener("DOMContentLoaded", () => {
 
-const DIARIA_PADRAO = 250;
-const DIARIA_FERIADO_POR_PESSOA = 100;
-const TAXA_LIMPEZA_FIXA = "media_diarias";
+    // ================================
+    // LOGIN
+    // ================================
+    window.login = function () {
+        const nome = document.getElementById("login-nome").value.trim();
+        const tel = document.getElementById("login-tel").value.trim();
 
-// períodos especiais
-const PERIODOS_PACOTE = [
-  { start: "2026-02-14", end: "2026-02-18", label: "Carnaval" },
-  { start: "2026-12-24", end: "2027-01-02", label: "Final de Ano" }
-];
+        if (!nome || !tel) {
+            alert("Preencha nome e telefone para entrar.");
+            return;
+        }
 
-// feriados SP
-const FERIADOS = [
-  "2026-01-01","2026-02-16","2026-02-17","2026-04-03","2026-04-21","2026-05-01",
-  "2026-09-07","2026-10-12","2026-11-02","2026-11-15","2026-12-25"
-];
+        document.getElementById("login-screen").classList.remove("active");
+        document.getElementById("main-screen").classList.add("active");
+    };
 
-function parseYMD(s){ return new Date(s + "T00:00:00"); }
-function ymd(date){
-  const y = date.getFullYear();
-  const m = String(date.getMonth()+1).padStart(2,"0");
-  const d = String(date.getDate()).padStart(2,"0");
-  return `${y}-${m}-${d}`;
-}
-function dateInRange(d, start, end){
-  const dd = parseYMD(d);
-  return dd >= parseYMD(start) && dd <= parseYMD(end);
-}
+    // ================================
+    // GALERIA
+    // ================================
+    const btnFotos = document.getElementById("btn-fotos");
+    const btnVoltar = document.getElementById("btn-voltar");
 
-let selectionStart = null;
-let selectionEnd = null;
+    btnFotos.addEventListener("click", () => {
+        document.getElementById("main-screen").classList.remove("active");
+        document.getElementById("galeria").classList.add("active");
+    });
 
-// LOGIN
-function login() {
-  const nome = document.getElementById("login-nome").value;
-  const tel = document.getElementById("login-tel").value;
+    btnVoltar.addEventListener("click", () => {
+        document.getElementById("galeria").classList.remove("active");
+        document.getElementById("main-screen").classList.add("active");
+    });
 
-  if (!nome || !tel) {
-    alert("Preencha nome e telefone!");
-    return;
-  }
+    // ================================
+    // CALENDÁRIO
+    // ================================
+    const calendario = document.getElementById("calendar");
+    const diariaNormal = 250;
+    const pacoteFeriadoPorPessoa = 100;
+    const taxaLimpeza = 100;
 
-  localStorage.setItem("nome", nome);
-  localStorage.setItem("telefone", tel);
+    const feriadosEspeciais = [
+        "2026-01-01",
+        "2026-02-16",
+        "2026-02-17",
+        "2026-12-24",
+        "2026-12-25",
+        "2026-12-31"
+    ];
 
-  document.getElementById("login-screen").classList.remove("active");
-  document.getElementById("main-screen").classList.add("active");
-}
+    function gerarCalendario() {
+        const ano = 2026;
+        calendario.innerHTML = "";
 
-// GERAR CALENDÁRIO
-function gerarCalendario(){
-  const container = document.getElementById("calendar");
-  container.innerHTML = "";
+        for (let mes = 0; mes < 12; mes++) {
+            const primeiroDia = new Date(ano, mes, 1);
+            const ultimoDia = new Date(ano, mes + 1, 0);
 
-  const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+            const tituloMes = document.createElement("div");
+            tituloMes.classList.add("mes-nome");
+            tituloMes.textContent = primeiroDia.toLocaleString("pt-BR", { month: "long" }).toUpperCase();
+            calendario.appendChild(tituloMes);
 
-  for(let m=0;m<12;m++){
-    const mesBox = document.createElement("div");
-    mesBox.className = "mes-box";
+            for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+                const data = new Date(ano, mes, dia);
+                const dataISO = data.toISOString().substring(0, 10);
 
-    const titulo = document.createElement("h3");
-    titulo.textContent = `${meses[m]} ${ANO}`;
-    mesBox.appendChild(titulo);
+                const cel = document.createElement("div");
+                cel.classList.add("dia");
 
-    const diasNoMes = new Date(ANO, m+1, 0).getDate();
-    const daysContainer = document.createElement("div");
-    daysContainer.className = "days";
+                // Fim de semana
+                if (data.getDay() === 0 || data.getDay() === 6) {
+                    cel.classList.add("fds");
+                }
 
-    for(let d=1; d<=diasNoMes; d++){
-      const dataStr = `${ANO}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-      const dateObj = new Date(dataStr + "T00:00:00");
+                // Feriados especiais
+                if (feriadosEspeciais.includes(dataISO)) {
+                    cel.classList.add("feriado");
+                }
 
-      const weekday = dateObj.getDay();
-      const isWeekend = weekday === 0 || weekday === 6;
-      const isFeriado = FERIADOS.includes(dataStr);
-      const inSpecialPeriod = PERIODOS_PACOTE.some(p => dateInRange(dataStr, p.start, p.end));
+                cel.textContent = dia;
 
-      const cell = document.createElement("div");
-      cell.className = "dia";
-      cell.dataset.date = dataStr;
+                cel.dataset.data = dataISO;
 
-      if(inSpecialPeriod){
-        cell.dataset.priceType = "por_pessoa";
-        cell.dataset.price = DIARIA_FERIADO_POR_PESSOA;
-        cell.innerHTML = `<div>${d}</div><small>R$ ${DIARIA_FERIADO_POR_PESSOA}/p</small>`;
-      } else {
-        cell.dataset.priceType = "por_diaria";
-        cell.dataset.price = DIARIA_PADRAO;
-        cell.innerHTML = `<div>${d}</div><small>R$ ${DIARIA_PADRAO}</small>`;
-      }
+                cel.addEventListener("click", selecionarData);
 
-      if(isFeriado){
-        cell.classList.add("indisponivel");
-      } else if(isWeekend){
-        cell.classList.add("fimdesemana");
-      } else {
-        cell.classList.add("disponivel");
-      }
-
-      cell.addEventListener("click", () => onClickDate(cell));
-      daysContainer.appendChild(cell);
+                calendario.appendChild(cel);
+            }
+        }
     }
 
-    mesBox.appendChild(daysContainer);
-    container.appendChild(mesBox);
-  }
-}
+    let dataInicio = null;
+    let dataFim = null;
 
-function clearSelection(){
-  document.querySelectorAll(".dia").forEach(el => {
-    el.classList.remove("selecionado","range");
-  });
-  selectionStart = null;
-  selectionEnd = null;
-}
+    function selecionarData(e) {
+        const dataSelecionada = e.target.dataset.data;
 
-function onClickDate(cell){
-  if(cell.classList.contains("indisponivel")){
-    alert("Esta data não está disponível.");
-    return;
-  }
+        // Se ainda não escolheu início
+        if (!dataInicio) {
+            dataInicio = dataSelecionada;
+            document.getElementById("dataInicio").value = dataSelecionada;
+            return;
+        }
 
-  const date = cell.dataset.date;
+        // Se escolheu início e agora fim
+        if (!dataFim) {
+            if (dataSelecionada < dataInicio) {
+                alert("A data final não pode ser antes da inicial.");
+                return;
+            }
 
-  if(!selectionStart || (selectionStart && selectionEnd)){
-    clearSelection();
-    selectionStart = date;
-    cell.classList.add("selecionado");
-    updateInputsFromSelection();
-    return;
-  }
+            dataFim = dataSelecionada;
+            document.getElementById("dataFim").value = dataSelecionada;
+            return;
+        }
 
-  if(date < selectionStart){
-    alert("A data final não pode ser anterior à inicial.");
-    return;
-  }
-
-  selectionEnd = date;
-  marcarIntervalo();
-  updateInputsFromSelection();
-}
-
-function marcarIntervalo(){
-  document.querySelectorAll(".dia").forEach(el => {
-    el.classList.remove("selecionado","range");
-    const d = el.dataset.date;
-    if(!d) return;
-
-    if(d === selectionStart || d === selectionEnd){
-      el.classList.add("selecionado");
-    } else if (d > selectionStart && d < selectionEnd){
-      el.classList.add("range");
+        // Se clicou de novo, reinicia seleção
+        dataInicio = dataSelecionada;
+        dataFim = null;
+        document.getElementById("dataInicio").value = dataSelecionada;
+        document.getElementById("dataFim").value = "";
     }
-  });
-}
 
-function updateInputsFromSelection(){
-  if(selectionStart) document.getElementById("dataInicio").value = selectionStart;
-  if(selectionEnd) document.getElementById("dataFim").value = selectionEnd;
-  calcularValorTotal();
-}
+    gerarCalendario();
 
-// CALCULAR TOTAL
-function calcularValorTotal(){
-  const ini = document.getElementById("dataInicio").value;
-  const fim = document.getElementById("dataFim").value;
-  const pessoas = Number(document.getElementById("qtdPessoas").value) || 1;
+    // ================================
+    // CÁLCULO DE DIÁRIAS
+    // ================================
+    function calcularTotal() {
+        const inicio = document.getElementById("dataInicio").value;
+        const fim = document.getElementById("dataFim").value;
+        const pessoas = parseInt(document.getElementById("qtdPessoas").value);
 
-  if(!ini || !fim) return;
+        if (!inicio || !fim) {
+            alert("Selecione a data inicial e final.");
+            return;
+        }
 
-  if(fim < ini){
-    alert("A data final não pode ser anterior à inicial.");
-    return;
-  }
+        const d1 = new Date(inicio);
+        const d2 = new Date(fim);
 
-  let total = 0;
-  let dias = 0;
+        let total = 0;
+        let diarias = 0;
 
-  for(let d = new Date(ini + "T00:00:00"); d <= new Date(fim + "T00:00:00"); d.setDate(d.getDate()+1)){
-    const data = ymd(d);
-    const inSpecial = PERIODOS_PACOTE.some(p => dateInRange(data, p.start, p.end));
+        for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+            const dataISO = d.toISOString().substring(0, 10);
 
-    if(inSpecial){
-      total += DIARIA_FERIADO_POR_PESSOA * pessoas;
-    } else {
-      total += DIARIA_PADRAO;
+            diarias++;
+
+            // feriados especiais
+            if (feriadosEspeciais.includes(dataISO)) {
+                total += pessoas * pacoteFeriadoPorPessoa;
+            } else {
+                total += diariaNormal;
+            }
+        }
+
+        total += taxaLimpeza;
+
+        document.getElementById("resumoDiarias").textContent =
+            `Diárias selecionadas: ${diarias}`;
+
+        document.getElementById("resumoValor").innerHTML =
+            `<b>Total calculado: R$ ${total.toFixed(2)}</b>`;
     }
-    dias++;
-  }
 
-  const taxaLimpeza = Math.round(total / dias);
-  const totalFinal = total + taxaLimpeza;
+    document.getElementById("btn-calc").addEventListener("click", calcularTotal);
 
-  document.getElementById("resumoDiarias").textContent =
-    `Diárias selecionadas: ${dias}`;
-
-  document.getElementById("resumoValor").innerHTML =
-    `<b>Total calculado: R$ ${totalFinal.toFixed(2).replace(".", ",")}</b>`;
-}
-
-// ENVIAR WHATSAPP
-function enviarReserva(){
-  const nome = localStorage.getItem("nome");
-  const tel = localStorage.getItem("telefone");
-
-  const ini = document.getElementById("dataInicio").value;
-  const fim = document.getElementById("dataFim").value;
-  const pessoas = document.getElementById("qtdPessoas").value;
-
-  if(!ini || !fim){
-    alert("Selecione as datas.");
-    return;
-  }
-
-  const msg =
-    `*Reserva — Aconchego do Rei*%0A%0A` +
-    `*Nome:* ${nome}%0A` +
-    `*Telefone:* ${tel}%0A` +
-    `*Período:* ${ini} até ${fim}%0A` +
-    `*Pessoas:* ${pessoas}%0A%0A` +
-    `Enviado pelo sistema de reservas.`;
-
-  window.open(`https://wa.me/${telProprietario}?text=${msg}`, "_blank");
-}
-
-// GALERIA
-document.getElementById("btn-fotos").addEventListener("click", ()=>{
-  document.getElementById("main-screen").classList.remove("active");
-  document.getElementById("galeria").classList.add("active");
-});
-document.getElementById("btn-voltar").addEventListener("click", ()=>{
-  document.getElementById("galeria").classList.remove("active");
-  document.getElementById("main-screen").classList.add("active");
 });
 
-// INICIALIZA
-gerarCalendario();
 
 
 
