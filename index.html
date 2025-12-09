@@ -12,14 +12,16 @@
     <h1>Aconchego do Rei</h1>
   </header>
 
-  <!-- LOGIN -->
+  <!-- LOGIN DE CLIENTE -->
   <main id="app">
     <section id="login-screen" class="screen active">
       <div class="card auth">
         <h2>Entrar para reservar</h2>
-        <input id="login-nome" type="text" placeholder="Seu nome" />
-        <input id="login-tel" type="tel" placeholder="Telefone (somente números)" />
-        <button id="btn-login" class="btn-primary">Entrar</button>
+        <input id="nome" type="text" placeholder="Seu nome" />
+        <input id="telefone" type="tel" placeholder="Telefone (somente números)" />
+        <input id="data" type="date" />
+        <div id="aviso-data" class="muted"></div>
+        <button id="btn-reservar" onclick="salvarReserva()" class="btn-primary">Enviar reserva</button>
         <p class="muted">Os dados servem apenas para contato e reserva.</p>
       </div>
     </section>
@@ -34,23 +36,6 @@
           </div>
           <div>
             <button id="btn-fotos" class="btn-secondary">Ver fotos</button>
-          </div>
-        </div>
-
-        <div class="controls">
-          <label>Data início<input type="date" id="dataInicio" /></label>
-          <label>Data fim<input type="date" id="dataFim" /></label>
-          <label>Pessoas<input type="number" id="qtdPessoas" min="1" max="10" value="1" /></label>
-        </div>
-
-        <section class="calendar card" id="calendar"></section>
-
-        <div class="summary">
-          <p id="resumoDiarias">Diárias selecionadas: —</p>
-          <p id="resumoValor"><strong>Total calculado: —</strong></p>
-          <div class="row">
-            <button id="btn-calc" class="btn-primary">Calcular total</button>
-            <button id="btn-enviar" class="btn-whatsapp">Enviar reserva (avisa proprietário)</button>
           </div>
         </div>
       </div>
@@ -71,7 +56,15 @@
     </section>
   </main>
 
-  <!-- admin view: se abrir com ?resId=... mostra painel simples -->
+  <!-- LOGIN ADMIN (PROPRIETÁRIO) -->
+  <div id="login-area" class="card admin-login">
+    <h3>Login do Proprietário</h3>
+    <input id="login-user" type="text" placeholder="Usuário" />
+    <input id="login-pass" type="password" placeholder="Senha" />
+    <button onclick="login()" class="btn-primary">Entrar</button>
+  </div>
+
+  <!-- PAINEL ADMIN -->
   <div id="admin-panel" class="admin hidden card">
     <h3>Painel (proprietário)</h3>
     <p id="admin-info">Carregando reserva...</p>
@@ -83,13 +76,10 @@
 
   <footer class="footer">© Aconchego do Rei</footer>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="script.js"></script>
+  <!-- FIREBASE -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
-
-
 
 
 
