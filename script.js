@@ -1,4 +1,4 @@
-const telProprietario = "12997348237";
+const telProprietario = "1297410-7636";
 
 function login() {
     const nome = document.getElementById("login-nome").value;
@@ -78,4 +78,5 @@ function enviarReserva() {
 
     window.open(`https://wa.me/55${telProprietario}?text=${mensagem}`);
 }
+
 
