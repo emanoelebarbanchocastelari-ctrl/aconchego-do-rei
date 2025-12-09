@@ -8,14 +8,10 @@ import {
   collection,
   addDoc,
   getDocs,
-  query,
-  where
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
 
 /* ---------------------------------------------------
    CONFIGURAÇÃO DO SEU FIREBASE
-   (copiada exatamente como o Firebase gerou para você)
 --------------------------------------------------- */
 const firebaseConfig = {
   apiKey: "AIzaSyAboD4-CMUE8tyARA9MVvT5tOS1pBIRC0Y",
@@ -27,7 +23,6 @@ const firebaseConfig = {
   measurementId: "G-QBFQWCB4KC"
 };
 
-
 /* ---------------------------------------------------
    INICIALIZAÇÃO DO FIREBASE
 --------------------------------------------------- */
@@ -35,17 +30,9 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getFirestore(app);
 
-
-/* ---------------------------------------------------
-   AQUI COMEÇA O RESTO DO SEU SISTEMA
-   (LOGIN, RESERVAS, CALENDÁRIO…)
---------------------------------------------------- */
-
-
 /* ---------- LOGIN SIMPLES (proprietário) ---------- */
-
 const ADMIN_USER = "admin";
-const ADMIN_PASSWORD = "1299734-8237";  // você me deu essa senha
+const ADMIN_PASSWORD = "1299734-8237";
 
 window.login = function () {
   const user = document.getElementById("login-user").value;
@@ -60,9 +47,7 @@ window.login = function () {
   }
 };
 
-
 /* ---------- FUNÇÃO PARA SALVAR RESERVA ---------- */
-
 window.salvarReserva = async function () {
   const nome = document.getElementById("nome").value;
   const telefone = document.getElementById("telefone").value;
@@ -82,15 +67,18 @@ window.salvarReserva = async function () {
     });
 
     alert("Reserva enviada! O proprietário irá confirmar.");
+    document.getElementById("nome").value = "";
+    document.getElementById("telefone").value = "";
+    document.getElementById("data").value = "";
+    document.getElementById("aviso-data").textContent = "";
+    carregarDatasIndisponiveis(); // atualiza datas bloqueadas
   } catch (error) {
     console.error("Erro ao salvar no Firebase:", error);
     alert("Erro ao enviar reserva.");
   }
 };
 
-
 /* ---------- LISTAR DATAS RESERVADAS NO CALENDÁRIO ---------- */
-
 async function carregarDatasIndisponiveis() {
   const snapshot = await getDocs(collection(db, "reservas"));
   const datas = [];
@@ -104,21 +92,29 @@ async function carregarDatasIndisponiveis() {
 
 carregarDatasIndisponiveis();
 
-
 /* ---------- MARCAR DATA INDISPONÍVEL NO CALENDÁRIO ---------- */
-
 document.addEventListener("DOMContentLoaded", () => {
   const inputData = document.getElementById("data");
+  const avisoData = document.getElementById("aviso-data");
 
-  if (!inputData) return; // evita "null.addEventListener"
+  if (!inputData) return;
 
-  inputData.addEventListener("change", () => {
+  // Bloqueia datas passadas
+  const hoje = new Date().toISOString().split("T")[0];
+  inputData.setAttribute("min", hoje);
+
+  // Verifica datas já reservadas
+  inputData.addEventListener("input", () => {
     if (window.datasReservadas.includes(inputData.value)) {
-      alert("❌ Esta data já está reservada!");
+      avisoData.textContent = "❌ Esta data já está reservada!";
       inputData.value = "";
+    } else {
+      avisoData.textContent = "";
     }
   });
 });
+
+
 
 
 
