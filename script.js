@@ -1,230 +1,124 @@
-// CONFIG
-const telProprietario = "5512997348237"; // WhatsApp corrigido
+/* ---------------------------------------------------
+   IMPORTS DO FIREBASE — funcionando no navegador
+--------------------------------------------------- */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-const ANO = 2026;
-const DIARIA_PADRAO = 250;
-const DIARIA_FERIADO_POR_PESSOA = 100;
-const TAXA_LIMPEZA = 100;
 
-const PERIODOS_PACOTE = [
-    { start: "2026-02-14", end: "2026-02-18", label: "Carnaval" },
-    { start: "2026-12-24", end: "2027-01-02", label: "Final do Ano" }
-];
+/* ---------------------------------------------------
+   CONFIGURAÇÃO DO SEU FIREBASE
+   (copiada exatamente como o Firebase gerou para você)
+--------------------------------------------------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyAboD4-CMUE8tyARA9MVvT5tOS1pBIRC0Y",
+  authDomain: "aconchego-do-rei.firebaseapp.com",
+  projectId: "aconchego-do-rei",
+  storageBucket: "aconchego-do-rei.firebasestorage.app",
+  messagingSenderId: "552480407298",
+  appId: "1:552480407298:web:e2ab65809fc87608778c1b",
+  measurementId: "G-QBFQWCB4KC"
+};
 
-const FERiadosSP = [
-    "2026-01-01","2026-02-16","2026-02-17","2026-04-03","2026-04-21",
-    "2026-05-01","2026-09-07","2026-10-12","2026-11-02","2026-11-15","2026-12-25"
-];
 
-function parseYMD(s){ return new Date(s + "T00:00:00"); }
-function ymd(d){
-    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-}
-function dateInRange(d, a, b){
-    const x = parseYMD(d);
-    return x >= parseYMD(a) && x <= parseYMD(b);
-}
+/* ---------------------------------------------------
+   INICIALIZAÇÃO DO FIREBASE
+--------------------------------------------------- */
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getFirestore(app);
 
-let selectionStart = null;
-let selectionEnd = null;
 
-function gerarCalendario(){
-    const container = document.getElementById("calendar");
-    container.innerHTML = "";
+/* ---------------------------------------------------
+   AQUI COMEÇA O RESTO DO SEU SISTEMA
+   (LOGIN, RESERVAS, CALENDÁRIO…)
+--------------------------------------------------- */
 
-    const meses = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
-    for(let m=0;m<12;m++){
-        const box = document.createElement("div");
-        box.className = "mes-box";
+/* ---------- LOGIN SIMPLES (proprietário) ---------- */
 
-        const h = document.createElement("h3");
-        h.textContent = `${meses[m]} ${ANO}`;
-        box.appendChild(h);
+const ADMIN_USER = "admin";
+const ADMIN_PASSWORD = "1299734-8237";  // você me deu essa senha
 
-        const days = document.createElement("div");
-        days.className = "days";
+window.login = function () {
+  const user = document.getElementById("login-user").value;
+  const pass = document.getElementById("login-pass").value;
 
-        const qtdDias = new Date(ANO, m+1, 0).getDate();
+  if (user === ADMIN_USER && pass === ADMIN_PASSWORD) {
+    alert("Login realizado com sucesso!");
+    document.getElementById("login-area").style.display = "none";
+    document.getElementById("admin-panel").style.display = "block";
+  } else {
+    alert("Usuário ou senha incorretos.");
+  }
+};
 
-        for(let d=1; d<=qtdDias; d++){
-            const dataStr = `${ANO}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-            const dt = new Date(dataStr+"T00:00:00");
 
-            const weekday = dt.getDay();
-            const isWeekend = weekday===0 || weekday===6;
-            const isFeriado = FERiadosSP.includes(dataStr);
-            const isPacote = PERIODOS_PACOTE.some(p => dateInRange(dataStr,p.start,p.end));
+/* ---------- FUNÇÃO PARA SALVAR RESERVA ---------- */
 
-            const cell = document.createElement("div");
-            cell.className = "dia";
-            cell.dataset.date = dataStr;
+window.salvarReserva = async function () {
+  const nome = document.getElementById("nome").value;
+  const telefone = document.getElementById("telefone").value;
+  const data = document.getElementById("data").value;
 
-            if(isPacote){
-                cell.innerHTML = `${d}<small>R$ ${DIARIA_FERIADO_PESSOAp}/p</small>`;
-            } else {
-                cell.innerHTML = `${d}<small>R$ ${DIARIA_PADRAO}</small>`;
-            }
+  if (!nome || !telefone || !data) {
+    alert("Preencha todos os campos!");
+    return;
+  }
 
-            if(isFeriado) cell.classList.add("indisponivel");
-            else if(isWeekend) cell.classList.add("fimdesemana");
-            else cell.classList.add("disponivel");
-
-            cell.onclick = () => selectDate(cell);
-
-            days.appendChild(cell);
-        }
-
-        box.appendChild(days);
-        container.appendChild(box);
-    }
-}
-
-function selectDate(cell){
-    if(cell.classList.contains("indisponivel")){
-        alert("Data indisponível.");
-        return;
-    }
-
-    const d = cell.dataset.date;
-
-    if(!selectionStart || (selectionStart && selectionEnd)){
-        clearSelection();
-        selectionStart = d;
-        cell.classList.add("selecionado");
-        selectionEnd = null;
-        document.getElementById("dataInicio").value = selectionStart;
-        calcularValor();
-        return;
-    }
-
-    if(d < selectionStart){
-        alert("A data final não pode ser antes da inicial.");
-        return;
-    }
-
-    selectionEnd = d;
-    document.getElementById("dataFim").value = selectionEnd;
-    markRange(selectionStart, selectionEnd);
-    calcularValor();
-}
-
-function clearSelection(){
-    document.querySelectorAll(".dia").forEach(c=>{
-        c.classList.remove("selecionado","range");
+  try {
+    await addDoc(collection(db, "reservas"), {
+      nome,
+      telefone,
+      data,
+      status: "pendente"
     });
-}
 
-function markRange(a,b){
-    document.querySelectorAll(".dia").forEach(c=>{
-        let dt = c.dataset.date;
-        if(dt===a || dt===b) c.classList.add("selecionado");
-        else if(dt > a && dt < b) c.classList.add("range");
-    });
-}
-
-function calcularValor(){
-    const ini = document.getElementById("dataInicio").value;
-    const fim = document.getElementById("dataFim").value;
-    const pessoas = Number(document.getElementById("qtdPessoas").value);
-
-    const rDias = document.getElementById("resumoDiarias");
-    const rVal = document.getElementById("resumoValor");
-
-    if(!ini || !fim){
-        rDias.textContent = "Diárias selecionadas: —";
-        rVal.textContent = "";
-        return;
-    }
-
-    if(fim < ini){
-        alert("Data final inválida!");
-        return;
-    }
-
-    let total = 0;
-    let count = 0;
-    let detalhes = [];
-
-    for(let d = parseYMD(ini); d <= parseYMD(fim); d.setDate(d.getDate()+1)){
-        const ds = ymd(d);
-
-        const isPacote = PERIODOS_PACOTE.some(p => dateInRange(ds,p.start,p.end));
-
-        let valor = isPacote ? DIARIA_FERIADO_POR_PESSOA * pessoas : DIARIA_PADRAO;
-        total += valor;
-
-        detalhes.push(`${ds} → R$ ${valor}`);
-        count++;
-    }
-
-    let totalFinal = total + TAXA_LIMPEZA;
-
-    rDias.textContent = `Diárias selecionadas: ${count}`;
-    rVal.innerHTML = `<b>Total: R$ ${totalFinal} (inclui limpeza de R$ ${TAXA_LIMPEZA})</b>`;
-
-    return {totalFinal, total, count};
-}
-
-function enviarReserva(){
-    const nome = localStorage.getItem("nome");
-    const tele = localStorage.getItem("telefone");
-    const ini = document.getElementById("dataInicio").value;
-    const fim = document.getElementById("dataFim").value;
-    const pessoas = document.getElementById("qtdPessoas").value;
-
-    const calc = calcularValor();
-    if(!calc) return;
-
-    const msg = `
-*Nova Reserva – Aconchego do Rei*
-
-*Nome:* ${nome}
-*Telefone:* ${tele}
-*Período:* ${ini} até ${fim}
-*Pessoas:* ${pessoas}
-
-*Total com limpeza:* R$ ${calc.totalFinal}
-
-Check-in: 14:00
-Check-out: 12:00
-    `;
-
-    window.open(`https://wa.me/${telProprietario}?text=${encodeURIComponent(msg)}`);
-}
-
-// EVENTOS
-document.getElementById("btn-login").onclick = ()=>{
-    const n = document.getElementById("login-nome").value;
-    const t = document.getElementById("login-tel").value;
-
-    if(!n || !t){ alert("Preencha os dados."); return; }
-
-    localStorage.setItem("nome",n);
-    localStorage.setItem("telefone",t);
-
-    document.getElementById("login-screen").classList.remove("active");
-    document.getElementById("main-screen").classList.add("active");
+    alert("Reserva enviada! O proprietário irá confirmar.");
+  } catch (error) {
+    console.error("Erro ao salvar no Firebase:", error);
+    alert("Erro ao enviar reserva.");
+  }
 };
 
-document.getElementById("btn-fotos").onclick = ()=>{
-    document.getElementById("main-screen").classList.remove("active");
-    document.getElementById("galeria").classList.add("active");
-};
 
-document.getElementById("btn-voltar").onclick = ()=>{
-    document.getElementById("galeria").classList.remove("active");
-    document.getElementById("main-screen").classList.add("active");
-};
+/* ---------- LISTAR DATAS RESERVADAS NO CALENDÁRIO ---------- */
 
-document.getElementById("btn-calc").onclick = calcularValor;
-document.getElementById("btn-enviar").onclick = enviarReserva;
+async function carregarDatasIndisponiveis() {
+  const snapshot = await getDocs(collection(db, "reservas"));
+  const datas = [];
 
-gerarCalendario();
+  snapshot.forEach((doc) => {
+    datas.push(doc.data().data);
+  });
+
+  window.datasReservadas = datas; // salva globalmente
+}
+
+carregarDatasIndisponiveis();
 
 
+/* ---------- MARCAR DATA INDISPONÍVEL NO CALENDÁRIO ---------- */
 
+document.addEventListener("DOMContentLoaded", () => {
+  const inputData = document.getElementById("data");
 
+  if (!inputData) return; // evita "null.addEventListener"
+
+  inputData.addEventListener("change", () => {
+    if (window.datasReservadas.includes(inputData.value)) {
+      alert("❌ Esta data já está reservada!");
+      inputData.value = "";
+    }
+  });
+});
 
 
 
