@@ -1,68 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Aconchego do Rei - Reservas</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aconchego do Rei - Reservas</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Aconchego do Rei</h1>
-    <p class="tag">Casa na praia — Reserve sua estadia</p>
-  </header>
+    <div class="header">
+        <img src="images/coroa.png" alt="Coroa" class="logo-icon" />
+        <h1 class="logo-title">Aconchego do Rei</h1>
+    </div>
 
-  <main>
-    <section id="hero">
-      <div id="gallery">
-        <img src="images/photo1.jpg" alt="Foto 1 da casa">
-        <img src="images/photo2.jpg" alt="Foto 2 da casa">
-        <img src="images/photo3.jpg" alt="Foto 3 da casa">
-      </div>
-      <div id="info">
-        <h2>Agenda de reservas</h2>
-        <p>Diária: <strong id="price">R$ 450,00</strong></p>
-        <p>Check-in: 14:00 | Check-out: 12:00</p>
-        <p>Capacidade máxima: 10 pessoas</p>
-        <p>Pix do proprietário: <strong id="pix">COLOQUE_A_CHAVE_PIX_AQUI</strong></p>
-      </div>
-    </section>
+    <div id="login-screen" class="screen active">
+        <h2>Login</h2>
+        <input id="login-nome" type="text" placeholder="Seu nome" />
+        <input id="login-tel" type="tel" placeholder="Telefone" />
+        <button onclick="login()">Entrar</button>
+    </div>
 
-    <section id="auth">
-      <h3>Entrar / Criar conta</h3>
-      <input id="name" placeholder="Seu nome" />
-      <input id="phone" placeholder="Seu telefone (ex: 11999999999)" />
-      <button id="btn-login">Entrar</button>
-    </section>
+    <div id="main-screen" class="screen">
+        <button class="btn-fotos" onclick="abrirFotos()">Ver Fotos da Casa</button>
 
-    <section id="calendar-section" class="hidden">
-      <h3>Calendário 2025</h3>
-      <p>Datas reservadas aparecem em vermelho. Clique em uma data disponível para selecionar.</p>
-      <div id="calendar"></div>
+        <h2>Calendário de Reservas 2026</h2>
+        <div id="calendar"></div>
 
-      <div id="reservation-panel" class="hidden">
-        <p>Data selecionada: <span id="selected-date"></span></p>
-        <label> Nº de pessoas (1-10): <input type="number" id="people" min="1" max="10" value="1" /></label>
-        <p>Valor por diária: <strong id="daily-price"></strong></p>
-        <p>Total: <strong id="total-price"></strong></p>
-        <label><input type="checkbox" id="accept-deposit" /> Desejo enviar sinal via PIX para reservar</label>
-        <div class="buttons">
-          <button id="btn-pay">Gerar link PIX / Mostrar instruções</button>
-          <button id="btn-confirm">Confirmar reserva (envia WhatsApp ao proprietário)</button>
+        <div class="reserva-box">
+            <h3>Selecionar Período</h3>
+            <p>Data inicial:</p>
+            <input type="date" id="dataInicio" />
+
+            <p>Data final:</p>
+            <input type="date" id="dataFim" />
+
+            <p>Quantidade de pessoas (máx. 10):</p>
+            <input type="number" id="qtdPessoas" min="1" max="10" />
+
+            <button onclick="enviarReserva()">Enviar Reserva por WhatsApp</button>
         </div>
-      </div>
-    </section>
+    </div>
 
-    <section id="my-reservations" class="hidden">
-      <h3>Minhas reservas</h3>
-      <ul id="reservations-list"></ul>
-    </section>
-  </main>
+    <div id="galeria" class="screen">
+        <h2>Galeria de Fotos</h2>
+        <button onclick="voltarTela()">Voltar</button>
+        <div class="galeria-grid">
+            <img src="images/foto1.jpg" />
+            <img src="images/foto2.jpg" />
+            <img src="images/foto3.jpg" />
+            <img src="images/foto4.jpg" />
+        </div>
+    </div>
 
-  <footer>
-    <small>Desenvolvido para "Aconchego do Rei"</small>
-  </footer>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+
+
