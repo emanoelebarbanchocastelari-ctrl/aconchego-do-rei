@@ -1,58 +1,83 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aconchego do Rei - Reservas</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aconchego do Rei – Reservas</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="header">
-        <img src="images/coroa.png" alt="Coroa" class="logo-icon" />
-        <h1 class="logo-title">Aconchego do Rei</h1>
-    </div>
 
+    <!-- TELA DE LOGIN -->
     <div id="login-screen" class="screen active">
-        <h2>Login</h2>
-        <input id="login-nome" type="text" placeholder="Seu nome" />
-        <input id="login-tel" type="tel" placeholder="Telefone" />
-        <button onclick="login()">Entrar</button>
+        <h1 class="titulo">
+            <img src="img/coroa.png" class="coroa">  
+            Aconchego do Rei
+        </h1>
+
+        <div class="login-box">
+            <input id="login-nome" type="text" placeholder="Seu nome">
+            <input id="login-tel" type="tel" placeholder="Seu telefone">
+            <button onclick="login()">Entrar</button>
+        </div>
     </div>
 
+
+
+    <!-- TELA PRINCIPAL -->
     <div id="main-screen" class="screen">
+        <h1 class="titulo">
+            <img src="img/coroa.png" class="coroa">  
+            Aconchego do Rei
+        </h1>
+
         <button class="btn-fotos" onclick="abrirFotos()">Ver Fotos da Casa</button>
 
-        <h2>Calendário de Reservas 2026</h2>
+        <h2>Calendário 2026</h2>
         <div id="calendar"></div>
 
-        <div class="reserva-box">
-            <h3>Selecionar Período</h3>
-            <p>Data inicial:</p>
-            <input type="date" id="dataInicio" />
+        <div class="form-box">
+            <label>Data de início:</label>
+            <input type="date" id="dataInicio">
 
-            <p>Data final:</p>
-            <input type="date" id="dataFim" />
+            <label>Data de fim:</label>
+            <input type="date" id="dataFim">
 
-            <p>Quantidade de pessoas (máx. 10):</p>
-            <input type="number" id="qtdPessoas" min="1" max="10" />
+            <label>Número de pessoas:</label>
+            <input type="number" id="qtdPessoas" min="1">
 
-            <button onclick="enviarReserva()">Enviar Reserva por WhatsApp</button>
+            <label>
+                <input type="checkbox" id="isentoLimpeza">
+                Desejo isenção da taxa de limpeza (entregar limpo e organizado)
+            </label>
+
+            <p id="resumoValor"><b>Total calculado: —</b></p>
+
+            <button onclick="enviarReserva()">Enviar Reserva via WhatsApp</button>
         </div>
     </div>
 
+
+
+    <!-- GALERIA DE FOTOS -->
     <div id="galeria" class="screen">
-        <h2>Galeria de Fotos</h2>
-        <button onclick="voltarTela()">Voltar</button>
-        <div class="galeria-grid">
-            <img src="images/foto1.jpg" />
-            <img src="images/foto2.jpg" />
-            <img src="images/foto3.jpg" />
-            <img src="images/foto4.jpg" />
+        <h2>Fotos da Casa</h2>
+
+        <div class="galeria-box">
+            <img src="img/foto1.jpg">
+            <img src="img/foto2.jpg">
+            <img src="img/foto3.jpg">
+            <img src="img/foto4.jpg">
         </div>
+
+        <button onclick="voltarTela()">Voltar</button>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
+
 
 
