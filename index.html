@@ -1,87 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aconchego do Rei – Reservas</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aconchego do Rei — Reservas</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <header class="topbar">
+    <img src="img/coroa.png" alt="coroa" class="coroa">
+    <h1>Aconchego do Rei</h1>
+  </header>
 
-    <!-- TELA DE LOGIN -->
+  <!-- LOGIN -->
+  <main id="app">
     <section id="login-screen" class="screen active">
-        <div class="login-box card">
-            <h2>Bem-vindo ao Aconchego do Rei</h2>
-            <p>Faça login para continuar</p>
-
-            <label>Seu nome</label>
-            <input id="login-nome" type="text" placeholder="Digite seu nome">
-
-            <label>Seu telefone</label>
-            <input id="login-tel" type="text" placeholder="Ex: 12998765432">
-
-            <button id="btn-login" class="btn-primary">Entrar</button>
-        </div>
+      <div class="card auth">
+        <h2>Entrar para reservar</h2>
+        <input id="login-nome" type="text" placeholder="Seu nome" />
+        <input id="login-tel" type="tel" placeholder="Telefone (somente números)" />
+        <button id="btn-login" class="btn-primary">Entrar</button>
+        <p class="muted">Os dados servem apenas para contato e reserva.</p>
+      </div>
     </section>
 
-    <!-- TELA PRINCIPAL -->
+    <!-- MAIN -->
     <section id="main-screen" class="screen">
-        <header class="top-bar">
-            <h1>Aconchego do Rei</h1>
-            <button id="btn-fotos" class="btn-secondary">Ver Fotos</button>
-        </header>
-
-        <div class="card">
-            <h2>Selecione o período</h2>
-
-            <div class="form-row">
-                <div>
-                    <label>Data de início</label>
-                    <input type="date" id="dataInicio">
-                </div>
-
-                <div>
-                    <label>Data final</label>
-                    <input type="date" id="dataFim">
-                </div>
-
-                <div>
-                    <label>Pessoas</label>
-                    <input type="number" id="qtdPessoas" min="1" value="1">
-                </div>
-            </div>
-
-            <div id="calendar"></div>
-
-            <button id="btn-calc" class="btn-primary full">Calcular Total</button>
-
-            <p id="resumoDiarias" class="resumo"></p>
-            <p id="resumoValor" class="resumo"></p>
-
-            <button id="btn-enviar" class="btn-whatsapp full">Enviar Reserva pelo WhatsApp</button>
+      <div class="card">
+        <div class="main-header">
+          <div>
+            <h2>Reservar — Aconchego do Rei</h2>
+            <div class="check">Check-in 14:00 — Check-out 12:00</div>
+          </div>
+          <div>
+            <button id="btn-fotos" class="btn-secondary">Ver fotos</button>
+          </div>
         </div>
+
+        <div class="controls">
+          <label>Data início<input type="date" id="dataInicio" /></label>
+          <label>Data fim<input type="date" id="dataFim" /></label>
+          <label>Pessoas<input type="number" id="qtdPessoas" min="1" max="10" value="1" /></label>
+        </div>
+
+        <section class="calendar card" id="calendar"></section>
+
+        <div class="summary">
+          <p id="resumoDiarias">Diárias selecionadas: —</p>
+          <p id="resumoValor"><strong>Total calculado: —</strong></p>
+          <div class="row">
+            <button id="btn-calc" class="btn-primary">Calcular total</button>
+            <button id="btn-enviar" class="btn-whatsapp">Enviar reserva (avisa proprietário)</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- GALERIA -->
     <section id="galeria" class="screen">
-        <header class="top-bar">
-            <button id="btn-voltar" class="btn-secondary">← Voltar</button>
-            <h1>Galeria de Fotos</h1>
-        </header>
-
-        <div class="galeria-container">
-            <img src="img/foto1.jpg" class="foto">
-            <img src="img/foto2.jpg" class="foto">
-            <img src="img/foto3.jpg" class="foto">
-            <img src="img/foto4.jpg" class="foto">
+      <div class="card">
+        <button id="btn-voltar" class="btn-secondary">← Voltar</button>
+        <h3>Galeria</h3>
+        <div class="gallery">
+          <img src="img/foto1.jpg" alt="foto1" />
+          <img src="img/foto2.jpg" alt="foto2" />
+          <img src="img/foto3.jpg" alt="foto3" />
+          <img src="img/foto4.jpg" alt="foto4" />
         </div>
+      </div>
     </section>
+  </main>
 
-    <script src="script.js"></script>
+  <!-- admin view: se abrir com ?resId=... mostra painel simples -->
+  <div id="admin-panel" class="admin hidden card">
+    <h3>Painel (proprietário)</h3>
+    <p id="admin-info">Carregando reserva...</p>
+    <div class="row">
+      <button id="btn-confirm" class="btn-primary">Confirmar reserva e enviar PIX ao cliente (abrir WhatsApp)</button>
+      <button id="btn-decline" class="btn-secondary">Recusar</button>
+    </div>
+  </div>
+
+  <footer class="footer">© Aconchego do Rei</footer>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
-
 
 
 
