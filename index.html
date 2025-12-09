@@ -1,87 +1,88 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Aconchego do Rei — Reservas</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aconchego do Rei – Reservas</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <header class="topbar">
-    <h1>Aconchego do Rei</h1>
-  </header>
 
-  <!-- LOGIN -->
-  <main id="app">
+<body>
+
+    <!-- TELA DE LOGIN -->
     <section id="login-screen" class="screen active">
-      <div class="card">
-        <h2>Entrar para reservar</h2>
-        <input id="login-nome" type="text" placeholder="Seu nome">
-        <input id="login-tel" type="tel" placeholder="Telefone (somente números)">
-        <button onclick="login()">Entrar</button>
-        <small class="muted">Você precisa entrar para visualizar e reservar.</small>
-      </div>
+        <div class="login-box card">
+            <h2>Bem-vindo ao Aconchego do Rei</h2>
+            <p>Faça login para continuar</p>
+
+            <label>Seu nome</label>
+            <input id="login-nome" type="text" placeholder="Digite seu nome">
+
+            <label>Seu telefone</label>
+            <input id="login-tel" type="text" placeholder="Ex: 12998765432">
+
+            <button id="btn-login" class="btn-primary">Entrar</button>
+        </div>
     </section>
 
-    <!-- PRINCIPAL -->
+    <!-- TELA PRINCIPAL -->
     <section id="main-screen" class="screen">
-      <div class="top-actions">
-        <button id="btn-fotos" class="btn-secondary">Ver fotos da casa</button>
-        <div class="checkinout">Check-in: <b>14:00</b> — Check-out: <b>12:00</b></div>
-      </div>
+        <header class="top-bar">
+            <h1>Aconchego do Rei</h1>
+            <button id="btn-fotos" class="btn-secondary">Ver Fotos</button>
+        </header>
 
-      <section class="calendar-section card">
-        <h3>Calendário 2026</h3>
-        <p class="muted">Clique na data inicial e depois na final para selecionar o período.</p>
-        <div id="calendar" class="calendar-grid"></div>
-      </section>
+        <div class="card">
+            <h2>Selecione o período</h2>
 
-      <section class="reservation card">
-        <h3>Resumo da reserva</h3>
+            <div class="form-row">
+                <div>
+                    <label>Data de início</label>
+                    <input type="date" id="dataInicio">
+                </div>
 
-        <label>Data início</label>
-        <input type="date" id="dataInicio">
+                <div>
+                    <label>Data final</label>
+                    <input type="date" id="dataFim">
+                </div>
 
-        <label>Data fim</label>
-        <input type="date" id="dataFim">
+                <div>
+                    <label>Pessoas</label>
+                    <input type="number" id="qtdPessoas" min="1" value="1">
+                </div>
+            </div>
 
-        <label>Quantidade de pessoas (máx. 10)</label>
-        <input type="number" id="qtdPessoas" min="1" max="10" value="1">
+            <div id="calendar"></div>
 
-        <p id="resumoDiarias" class="muted">Diárias selecionadas: —</p>
-        <p id="resumoValor"><b>Total calculado: —</b></p>
+            <button id="btn-calc" class="btn-primary full">Calcular Total</button>
 
-        <div class="actions">
-          <button id="btn-calc" class="btn-primary">Calcular total</button>
-          <button id="btn-enviar" class="btn-primary">Enviar reserva via WhatsApp</button>
+            <p id="resumoDiarias" class="resumo"></p>
+            <p id="resumoValor" class="resumo"></p>
+
+            <button id="btn-enviar" class="btn-whatsapp full">Enviar Reserva pelo WhatsApp</button>
         </div>
-
-        <small class="note">Observação: taxa de limpeza fixa = média das diárias do período.</small>
-      </section>
     </section>
 
     <!-- GALERIA -->
     <section id="galeria" class="screen">
-      <div class="card">
-        <h3>Fotos da casa</h3>
-        <div class="gallery" id="gallery-images">
-          <img src="img/foto1.jpg" alt="Foto 1">
-          <img src="img/foto2.jpg" alt="Foto 2">
-          <img src="img/foto3.jpg" alt="Foto 3">
-          <img src="img/foto4.jpg" alt="Foto 4">
+        <header class="top-bar">
+            <button id="btn-voltar" class="btn-secondary">← Voltar</button>
+            <h1>Galeria de Fotos</h1>
+        </header>
+
+        <div class="galeria-container">
+            <img src="img/foto1.jpg" class="foto">
+            <img src="img/foto2.jpg" class="foto">
+            <img src="img/foto3.jpg" class="foto">
+            <img src="img/foto4.jpg" class="foto">
         </div>
-        <button id="btn-voltar">Voltar</button>
-      </div>
     </section>
-  </main>
 
-  <footer class="footer">
-    <small>© Aconchego do Rei</small>
-  </footer>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+
+
 
 
 
