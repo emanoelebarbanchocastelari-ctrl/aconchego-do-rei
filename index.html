@@ -1,82 +1,89 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aconchego do Rei – Reservas</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Aconchego do Rei — Reservas</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <header class="topbar">
+    <img src="img/coroa.png" alt="Coroa" class="logo-coroa">
+    <h1>Aconchego do Rei</h1>
+  </header>
 
-    <!-- TELA DE LOGIN -->
-    <div id="login-screen" class="screen active">
-        <h1 class="titulo">
-            <img src="img/coroa.png.jpg" class="coroa">  
-            Aconchego do Rei
-        </h1>
+  <!-- LOGIN -->
+  <main id="app">
+    <section id="login-screen" class="screen active">
+      <div class="card">
+        <h2>Entrar para reservar</h2>
+        <input id="login-nome" type="text" placeholder="Seu nome">
+        <input id="login-tel" type="tel" placeholder="Telefone (somente números)">
+        <button id="btn-login">Entrar</button>
+        <small class="muted">Você precisa entrar para visualizar e reservar.</small>
+      </div>
+    </section>
 
-        <div class="login-box">
-            <input id="login-nome" type="text" placeholder="Seu nome">
-            <input id="login-tel" type="tel" placeholder="Seu telefone">
-            <button onclick="login()">Entrar</button>
-        </div>
-    </div>
+    <!-- PRINCIPAL -->
+    <section id="main-screen" class="screen">
+      <div class="top-actions">
+        <button id="btn-fotos" class="btn-secondary">Ver fotos da casa</button>
+        <div class="checkinout">Check-in: <b>14:00</b> — Check-out: <b>12:00</b></div>
+      </div>
 
+      <section class="calendar-section card">
+        <h3>Calendário 2026</h3>
+        <p class="muted">Clique na data inicial e depois na final para selecionar o período.</p>
+        <div id="calendar" class="calendar-grid"></div>
+      </section>
 
+      <section class="reservation card">
+        <h3>Resumo da reserva</h3>
 
-    <!-- TELA PRINCIPAL -->
-    <div id="main-screen" class="screen">
-        <h1 class="titulo">
-            <img src="img/coroa.png" class="coroa">  
-            Aconchego do Rei
-        </h1>
+        <label>Data início</label>
+        <input type="date" id="dataInicio">
 
-        <button class="btn-fotos" onclick="abrirFotos()">Ver Fotos da Casa</button>
+        <label>Data fim</label>
+        <input type="date" id="dataFim">
 
-        <h2>Calendário 2026</h2>
-        <div id="calendar"></div>
+        <label>Quantidade de pessoas (máx. 10)</label>
+        <input type="number" id="qtdPessoas" min="1" max="10" value="1">
 
-        <div class="form-box">
-            <label>Data de início:</label>
-            <input type="date" id="dataInicio">
+        <p id="resumoDiarias" class="muted">Diárias selecionadas: —</p>
+        <p id="resumoValor"><b>Total calculado: —</b></p>
 
-            <label>Data de fim:</label>
-            <input type="date" id="dataFim">
-
-            <label>Número de pessoas:</label>
-            <input type="number" id="qtdPessoas" min="1">
-
-            <label>
-                <input type="checkbox" id="isentoLimpeza">
-                Desejo isenção da taxa de limpeza (entregar limpo e organizado)
-            </label>
-
-            <p id="resumoValor"><b>Total calculado: —</b></p>
-
-            <button onclick="enviarReserva()">Enviar Reserva via WhatsApp</button>
-        </div>
-    </div>
-
-
-
-    <!-- GALERIA DE FOTOS -->
-    <div id="galeria" class="screen">
-        <h2>Fotos da Casa</h2>
-
-        <div class="galeria-box">
-            <img src="img/foto1.jpg.jpg">
-            <img src="img/foto2.jpg.jpg">
-            <img src="img/foto3.jpg.jpg">
-            <img src="img/foto4.jpg.jpg">
+        <div class="actions">
+          <button id="btn-calc" class="btn-primary">Calcular total</button>
+          <button id="btn-enviar" class="btn-primary">Enviar reserva via WhatsApp</button>
         </div>
 
-        <button onclick="voltarTela()">Voltar</button>
-    </div>
+        <small class="note">Observação: taxa de limpeza fixa = média das diárias do período.</small>
+      </section>
+    </section>
 
-    <script src="script.js"></script>
+    <!-- GALERIA -->
+    <section id="galeria" class="screen">
+      <div class="card">
+        <h3>Fotos da casa</h3>
+        <div class="gallery" id="gallery-images">
+          <img src="img/foto1.jpg" alt="Foto 1">
+          <img src="img/foto2.jpg" alt="Foto 2">
+          <img src="img/foto3.jpg" alt="Foto 3">
+          <img src="img/foto4.jpg" alt="Foto 4">
+        </div>
+        <button id="btn-voltar">Voltar</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© Aconchego do Rei</small>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
