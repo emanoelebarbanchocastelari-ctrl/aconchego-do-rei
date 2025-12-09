@@ -1,80 +1,120 @@
-:root{
-  --bg:#f4f7fb;
-  --card:#fff;
-  --accent:#ff9800;
-  --muted:#6b7280;
-  --green:#2ecc71;
-  --red:#e74c3c;
-  --blue:#42a5f5;
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f7f7;
+    color: #333;
 }
 
-*{box-sizing:border-box}
-body{
-  font-family:Inter,Arial,Helvetica,sans-serif;
-  margin:0;background:var(--bg);color:#222;
+.screen { display: none; padding: 20px; }
+.screen.active { display: block; }
+
+.card {
+    background: white;
+    padding: 20px;
+    max-width: 700px;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-.topbar{
-  display:flex;align-items:center;gap:12px;padding:14px 20px;background:#0057b7;color:#fff;
-}
-.logo-coroa{width:42px;height:auto}
-.topbar h1{margin:0;font-size:20px}
+h1, h2 { margin-top: 0; }
 
-/* screens */
-.screen{display:none;padding:18px}
-.screen.active{display:block}
-.card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(16,24,40,0.06);max-width:1100px;margin:14px auto}
-.muted{color:var(--muted);font-size:14px}
-.note{font-size:13px;color:var(--muted)}
-
-/* login */
-input[type="text"],input[type="tel"],input[type="date"],input[type="number"]{
-  width:100%;padding:10px;margin:8px 0;border:1px solid #e6eef8;border-radius:8px;font-size:15px
-}
-button{padding:10px 14px;border-radius:8px;border:none;font-weight:600}
-#btn-login{background:var(--accent);color:#fff;width:100%;margin-top:6px}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-secondary{background:#fff;border:1px solid #ddd;color:#222;padding:8px 12px}
-
-/* calendar */
-.calendar-section{max-width:1200px;margin:18px auto}
-.calendar-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
-.mes-box{width:260px;background:linear-gradient(180deg,#fff,#fbfdff);padding:10px;border-radius:10px}
-.mes-box h3{margin:0 0 8px;text-align:center;color:#0b3d91;background:#eaf4ff;padding:6px;border-radius:8px;font-size:16px}
-.weekdays{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:var(--muted)}
-.days{display:flex;flex-wrap:wrap}
-.dia{
-  width:32px;height:32px;margin:3px;border-radius:6px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;
-  cursor:pointer;border:1px solid transparent;
-}
-.dia small{font-size:10px;opacity:0.9}
-
-/* colors */
-.disponivel{background:#e8f7ec;color:#0b6a3b;border:1px solid #cff0d9}
-.indisponivel{background:#ffecec;color:#a01d10;border:1px solid #ffc7c7;cursor:not-allowed}
-.fimdesemana{background:#e8f1ff;color:#0b47a1;border:1px solid #dfeaff}
-.selecionado{outline:3px solid rgba(0,123,255,0.2)}
-
-/* reservation box */
-.reservation .actions{display:flex;gap:8px;justify-content:center;margin-top:10px}
-.reservation label{display:block;text-align:left;margin-top:8px;font-weight:600}
-.reservation input[type=number]{max-width:140px}
-
-/* gallery */
-.gallery{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.gallery img{width:44%;border-radius:10px}
-
-/* footer */
-.footer{text-align:center;padding:12px;color:var(--muted);font-size:13px;margin-bottom:20px}
-
-/* responsive */
-@media(max-width:900px){
-  .mes-box{width:45%}
-  .gallery img{width:48%}
-}
-@media(max-width:520px){
-  .mes-box{width:100%}
-  .gallery img{width:100%}
+/* LOGIN */
+.login-box {
+    max-width: 400px;
+    margin: 60px auto;
+    text-align: center;
 }
 
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
 
+.btn-primary, .btn-secondary, .btn-whatsapp {
+    width: auto;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-primary {
+    background: #007bff;
+    color: white;
+}
+.btn-primary.full { width: 100%; }
+
+.btn-secondary {
+    background: #ddd;
+}
+
+.btn-whatsapp {
+    background: #25D366;
+    color: white;
+    font-weight: bold;
+}
+.btn-whatsapp.full { width: 100%; }
+
+/* CALENDÁRIO */
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-gap: 20px;
+    margin-top: 20px;
+}
+
+.mes-box {
+    background: white;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.dia {
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    background: #f0f0f0;
+    cursor: pointer;
+    font-size: 14px;
+}
+.dia small { display: block; font-size: 11px; }
+
+.dia.disponivel { background: #f9f9f9; }
+.dia.fimdesemana { background: #e8f4ff; }
+.dia.indisponivel { background: #ffdddd; cursor: not-allowed; }
+
+.dia.selecionado { background: #007bff; color: white; }
+.dia.range { background: #9ac8ff; }
+
+/* GALERIA */
+.galeria-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+.foto {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+/* RESUMO */
+.resumo {
+    background: #e8f4ff;
+    padding: 12px;
+    border-radius: 8px;
+}
