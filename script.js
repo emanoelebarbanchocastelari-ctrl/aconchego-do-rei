@@ -1,18 +1,8 @@
 /* ---------------------------------------------------
-   IMPORTS DO FIREBASE — funcionando no navegador
+   FIREBASE COMPATIBILIDADE PARA NAVEGADOR
 --------------------------------------------------- */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-/* ---------------------------------------------------
-   CONFIGURAÇÃO DO SEU FIREBASE
---------------------------------------------------- */
+// Inicialização do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAboD4-CMUE8tyARA9MVvT5tOS1pBIRC0Y",
   authDomain: "aconchego-do-rei.firebaseapp.com",
@@ -23,12 +13,8 @@ const firebaseConfig = {
   measurementId: "G-QBFQWCB4KC"
 };
 
-/* ---------------------------------------------------
-   INICIALIZAÇÃO DO FIREBASE
---------------------------------------------------- */
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 /* ---------- LOGIN SIMPLES (proprietário) ---------- */
 const ADMIN_USER = "admin";
@@ -59,18 +45,21 @@ window.salvarReserva = async function () {
   }
 
   try {
-    await addDoc(collection(db, "reservas"), {
-      nome,
-      telefone,
-      data,
+    await db.collection("reservas").add({
+      nome: nome,
+      telefone: telefone,
+      data: data,
       status: "pendente"
     });
 
     alert("Reserva enviada! O proprietário irá confirmar.");
+
+    // limpa campos
     document.getElementById("nome").value = "";
     document.getElementById("telefone").value = "";
     document.getElementById("data").value = "";
     document.getElementById("aviso-data").textContent = "";
+
     carregarDatasIndisponiveis(); // atualiza datas bloqueadas
   } catch (error) {
     console.error("Erro ao salvar no Firebase:", error);
@@ -80,7 +69,7 @@ window.salvarReserva = async function () {
 
 /* ---------- LISTAR DATAS RESERVADAS NO CALENDÁRIO ---------- */
 async function carregarDatasIndisponiveis() {
-  const snapshot = await getDocs(collection(db, "reservas"));
+  const snapshot = await db.collection("reservas").get();
   const datas = [];
 
   snapshot.forEach((doc) => {
